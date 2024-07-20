@@ -22,5 +22,4 @@ Make sure you have java jre installed
 - Win: Three consecutive X's or O's in a row, column, or diagonal.
 - Draw: All cells are filled without a win condition.
 
-## File Structure
 
