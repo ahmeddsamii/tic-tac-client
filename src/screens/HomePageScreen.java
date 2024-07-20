@@ -3,6 +3,7 @@ package screens;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -40,11 +41,10 @@ public class HomePageScreen extends AnchorPane {
     protected final Label _oScoreLabel;
     protected final Button _newGameBtn;
     protected final Button _exitBtn;
-    protected final Button _recordTheGameBtn;
     protected final Button _backBtn;
 
     private VideoPlayer videoPlayer;
-    private String mediaFilePath = "file:///C:/Users/Ahmed/Desktop/Screens/GitProjectTicTacToeClient/src/videos/elmal.mp4";
+    private String mediaFilePath = "file:///C:/Users/Ahmed/Desktop/Screens/GitProjectTicTacToeClient/src/videos/win.mp4";
 
     private char currentPlayer = 'X'; // 'X' starts the game
     private int xScore = 0;
@@ -73,7 +73,6 @@ public class HomePageScreen extends AnchorPane {
         _oScoreLabel = new Label();
         _newGameBtn = new Button();
         _exitBtn = new Button();
-        _recordTheGameBtn = new Button();
         _backBtn = new Button();
 
         setMaxHeight(USE_PREF_SIZE);
@@ -193,7 +192,7 @@ public class HomePageScreen extends AnchorPane {
         _newGameBtn.setFont(new Font("System Bold Italic", 21.0));
 
         _exitBtn.setLayoutX(820.0);
-        _exitBtn.setLayoutY(627.0);
+        _exitBtn.setLayoutY(580.0);
         _exitBtn.setMaxHeight(50.0);
         _exitBtn.setMaxWidth(250.0);
         _exitBtn.setMinHeight(50.0);
@@ -207,21 +206,7 @@ public class HomePageScreen extends AnchorPane {
         _exitBtn.setTextFill(javafx.scene.paint.Color.valueOf("#941b1b"));
         _exitBtn.setFont(new Font("System Bold Italic", 21.0));
 
-        _recordTheGameBtn.setLayoutX(820.0);
-        _recordTheGameBtn.setLayoutY(552.0);
-        _recordTheGameBtn.setMaxHeight(50.0);
-        _recordTheGameBtn.setMaxWidth(250.0);
-        _recordTheGameBtn.setMinHeight(50.0);
-        _recordTheGameBtn.setMinWidth(250.0);
-        _recordTheGameBtn.setMnemonicParsing(false);
-        _recordTheGameBtn.setOnAction(this::handleOnRecordTheGameBtn);
-        _recordTheGameBtn.setPrefHeight(50.0);
-        _recordTheGameBtn.setPrefWidth(250.0);
-        _recordTheGameBtn.setStyle("-fx-background-color: #008080; -fx-background-radius: 20;");
-        _recordTheGameBtn.setText("Record the game");
-        _recordTheGameBtn.setTextFill(javafx.scene.paint.Color.ORANGE);
-        _recordTheGameBtn.setFont(new Font("System Bold Italic", 21.0));
-
+        
         _backBtn.setLayoutX(14.0);
         _backBtn.setLayoutY(14.0);
         _backBtn.setMaxHeight(50.0);
@@ -241,7 +226,7 @@ public class HomePageScreen extends AnchorPane {
         gridPane.getRowConstraints().addAll(rowConstraints, rowConstraints0, rowConstraints1);
 
         anchorPane.getChildren().addAll(gridPane, label, label0, label1, label2, _xScoreLabel, label3, _oScoreLabel,
-                _newGameBtn, _exitBtn, _recordTheGameBtn, _backBtn);
+                _newGameBtn, _exitBtn, _backBtn);
         getChildren().add(anchorPane);
     }
 
@@ -368,15 +353,14 @@ public class HomePageScreen extends AnchorPane {
 
     protected void handleOnNewGameBtn(ActionEvent actionEvent) {
         resetGame();
+        enableAllButtons();
     }
 
     protected void handleOnExitBtn(ActionEvent actionEvent) {
-        // Implement exit functionality here
+        Platform.exit();
     }
 
-    protected void handleOnRecordTheGameBtn(ActionEvent actionEvent) {
-        // Implement record game functionality here
-    }
+    
 
     protected void handleOnBackBtn(ActionEvent actionEvent) {
         Parent root = new OnlineAndOfflineScreen();

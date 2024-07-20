@@ -318,9 +318,16 @@ public class HomePageScreenHard extends AnchorPane {
             recordMoveToFile(buttons[row][col]);
         }
         if (checkWin(currentPlayer)) {
-            updateScore(currentPlayer);
-            showLoseMessage(currentPlayer);
-            clearBoard();
+            if (currentPlayer == 'X') {
+                updateScore(currentPlayer);
+                showWinMessage(currentPlayer);
+                clearBoard();
+
+            } else if (currentPlayer == 'O') {
+                updateScore(currentPlayer);
+                showLoseMessage(currentPlayer);
+                clearBoard();
+            }
         } else if (isBoardFull()) {
             showDrawMessage();
             clearBoard();
@@ -484,7 +491,7 @@ public class HomePageScreenHard extends AnchorPane {
             String fileName = "Won_" + System.currentTimeMillis() + ".txt";
             recordFile = new File("C:\\Users\\Ahmed\\Downloads\\20-7\\20-7\\GitProjectTicTacToeClient\\recordEasy\\" + fileName);
             try (FileWriter writer = new FileWriter(recordFile)) {
-                writer.write(""); 
+                writer.write("");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -510,7 +517,7 @@ public class HomePageScreenHard extends AnchorPane {
             String fileName = "Won_" + System.currentTimeMillis() + ".txt";
             recordFile = new File("C:\\Users\\Ahmed\\Downloads\\20-7\\20-7\\GitProjectTicTacToeClient\\recordHard\\" + fileName);
             try (FileWriter writer = new FileWriter(recordFile)) {
-                writer.write(""); 
+                writer.write("");
             } catch (IOException e) {
                 e.printStackTrace();
             }

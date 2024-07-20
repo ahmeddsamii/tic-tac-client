@@ -1,6 +1,7 @@
 package screens;
 
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -162,6 +163,9 @@ public class OnlineAndOfflineScreen extends AnchorPane {
     ;
 
     protected void handleOnBtnAbout(javafx.event.ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("this is tic tac toe server client game and made by ahmed samy and alaa eisa and amr hani and nada salem");
+        alert.show();
     }
 
     ;

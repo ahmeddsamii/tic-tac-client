@@ -289,9 +289,16 @@ public class HomePageScreenMedium extends AnchorPane {
             recordMoveToFile(clickedButton);
         }
         if (checkWin(currentPlayer)) {
-            updateScore(currentPlayer);
-            showWinMessage(currentPlayer);
-            clearBoard();
+            if (currentPlayer == 'X') {
+                updateScore(currentPlayer);
+                showWinMessage(currentPlayer);
+                clearBoard();
+
+            } else if (currentPlayer == 'O') {
+                updateScore(currentPlayer);
+                showLoseMessage(currentPlayer);
+                clearBoard();
+            }
         } else if (isBoardFull()) {
             showDrawMessage();
             clearBoard();
@@ -344,7 +351,7 @@ public class HomePageScreenMedium extends AnchorPane {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
     }
 
-   private void handleComputerMove() {
+    private void handleComputerMove() {
         int[] move = getBestMove();
         buttons[move[0]][move[1]].fire();
     }
@@ -417,11 +424,11 @@ public class HomePageScreenMedium extends AnchorPane {
     }
 
     private void showWinMessage(char player) {
-       videoPlayer.playVideo(mediaFilePathWin);
+        videoPlayer.playVideo(mediaFilePathWin);
     }
-    
-     private void showLoseMessage(char player) {
-       videoPlayer.playVideo(mediaFilePathLose);
+
+    private void showLoseMessage(char player) {
+        videoPlayer.playVideo(mediaFilePathLose);
     }
 
     private void showDrawMessage() {
@@ -451,7 +458,6 @@ public class HomePageScreenMedium extends AnchorPane {
         Mynav.navigateTo(root, event);
     }
 
-   
     private void recordMoveToFile(Button button) {
         int row = GridPane.getRowIndex(button);
         int col = GridPane.getColumnIndex(button);
@@ -461,14 +467,14 @@ public class HomePageScreenMedium extends AnchorPane {
             e.printStackTrace();
         }
     }
-    
-    private void handleOnRecordGameBtn(ActionEvent even){
-       if (!isRecording) {
+
+    private void handleOnRecordGameBtn(ActionEvent even) {
+        if (!isRecording) {
             isRecording = true;
             String fileName = "Won_" + System.currentTimeMillis() + ".txt";
             recordFile = new File("C:\\Users\\Ahmed\\Downloads\\20-7\\20-7\\GitProjectTicTacToeClient\\recordMedium\\" + fileName);
             try (FileWriter writer = new FileWriter(recordFile)) {
-                writer.write(""); 
+                writer.write("");
             } catch (IOException e) {
                 e.printStackTrace();
             }

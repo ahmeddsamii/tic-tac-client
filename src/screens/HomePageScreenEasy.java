@@ -65,7 +65,7 @@ public class HomePageScreenEasy extends AnchorPane {
     public HomePageScreenEasy() {
 
         // Adjusting media file path to URI format
-videoPlayer = new VideoPlayer();
+        videoPlayer = new VideoPlayer();
         anchorPane = new AnchorPane();
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
@@ -295,9 +295,16 @@ videoPlayer = new VideoPlayer();
             recordMoveToFile(clickedButton);
         }
         if (checkWin(currentPlayer)) {
-            updateScore(currentPlayer);
-            showWinMessage(currentPlayer);
-            clearBoard();
+            if (currentPlayer == 'X') {
+                updateScore(currentPlayer);
+                showWinMessage(currentPlayer);
+                clearBoard();
+
+            } else if (currentPlayer == 'O') {
+                updateScore(currentPlayer);
+                showLoseMessage(currentPlayer);
+                clearBoard();
+            }
         } else if (isBoardFull()) {
             showDrawMessage();
             clearBoard();
@@ -384,11 +391,11 @@ videoPlayer = new VideoPlayer();
     }
 
     private void showWinMessage(char player) {
-       videoPlayer.playVideo(mediaFilePathWin);
+        videoPlayer.playVideo(mediaFilePathWin);
     }
-    
-     private void showLoseMessage(char player) {
-       videoPlayer.playVideo(mediaFilePathLose);
+
+    private void showLoseMessage(char player) {
+        videoPlayer.playVideo(mediaFilePathLose);
     }
 
     private void showDrawMessage() {
@@ -418,7 +425,6 @@ videoPlayer = new VideoPlayer();
         Mynav.navigateTo(root, event);
     }
 
-   
     private void recordMoveToFile(Button button) {
         int row = GridPane.getRowIndex(button);
         int col = GridPane.getColumnIndex(button);
@@ -428,9 +434,9 @@ videoPlayer = new VideoPlayer();
             e.printStackTrace();
         }
     }
-    
-    private void handleOnRecordGameBtn(ActionEvent even){
-       if (!isRecording) {
+
+    private void handleOnRecordGameBtn(ActionEvent even) {
+        if (!isRecording) {
             isRecording = true;
             String fileName = "Won_" + System.currentTimeMillis() + ".txt";
             recordFile = new File("C:\\Users\\Ahmed\\Downloads\\20-7\\20-7\\GitProjectTicTacToeClient\\recordEasy\\" + fileName);
