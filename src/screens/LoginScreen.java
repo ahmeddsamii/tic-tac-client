@@ -241,3 +241,98 @@ public class LoginScreen extends AnchorPane implements Runnable {
             closeResources();
         }
     }
+    
+    private void handleRequestDTO(RequestDTO requestDTO) {
+        Platform.runLater(() -> {
+            System.out.println("Handling RequestDTO with screenIndicator: " + requestDTO.getScreenIndicator());
+            switch (requestDTO.getScreenIndicator()) {
+                case 5:
+                case 8:
+                    showGameRequest(requestDTO);
+                    break;
+                case 6:
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            showAcceptanceAlert("accepted");
+                        }
+                    });
+
+                    break;
+                default:
+                    System.out.println("Received RequestDTO with unknown screenIndicator: " + requestDTO.getScreenIndicator());
+            }
+        });
+    }
+
+    private void showGameRequest(RequestDTO requestDTO) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Game Request");
+        alert.setHeaderText("Game Request from " + requestDTO.getSender_username());
+        alert.setContentText("Do you want to play a game with " + requestDTO.getSender_username() + "?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            sendGameResponse(requestDTO, true);
+            Parent root = new HomePageScreen();
+
+            Scene scene = new Scene(root);
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        } else {
+            sendGameResponse(requestDTO, false);
+        }
+    }
+
+    private void sendGameResponse(RequestDTO requestDTO, boolean accepted) {
+        try {
+            RequestDTO responseDTO = new RequestDTO();
+            responseDTO.setSender_username(pto.getUsername());
+            responseDTO.setReciver_username(requestDTO.getSender_username());
+            responseDTO.setScreenIndicator(accepted ? 6 : 7);
+            oos.writeObject(responseDTO);
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(LoginScreen.class.getName()).log(Level.SEVERE, "Error sending game response", ex);
+        }
+    }
+
+    private void closeResources() {
+        try {
+            if (ois != null) {
+                ois.close();
+            }
+            if (oos != null) {
+                oos.close();
+            }
+            if (s != null) {
+                s.close();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(LoginScreen.class.getName()).log(Level.SEVERE, "IOException while closing resources", ex);
+        }
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, new ButtonType("okay"));
+        alert.showAndWait();
+    }
+
+    private void showAcceptanceAlert(String message) {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Parent root = new HomePageScreen();
+
+            Scene scene = new Scene(root);
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        }
+
+    }
+}
