@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import screens.HomePageScreen;
 import screens.LoginScreen;
+import screens.MultiModesScreen;
 
 
 
