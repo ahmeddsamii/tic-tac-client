@@ -221,4 +221,128 @@ public class AvailabilityScreen extends AnchorPane implements Runnable {
             ex.printStackTrace();
             resetConnection();
         }
+        
     }
+    
+        private void handleRequest(RequestDTO request) {
+        System.out.println("Handling RequestDTO with screenIndicator: " + request.getScreenIndicator());
+        switch (request.getScreenIndicator()) {
+            case 5:
+            case 8:
+                showGameRequestAlert(request);
+                break;
+            case 6:
+                System.out.println("Game request accepted by: " + request.getSender_username());
+                // suppose to put the game begins 
+                break;
+            case 7:
+                showAlert("Game request declined by: " + request.getSender_username());
+                break;
+            case 20:
+                Platform.runLater(() -> {
+                    showAlert("Player " + request.getSender_username() + " has accepted your game request!");
+                });
+                break;
+            default:
+                System.out.println("Unhandled screenIndicator: " + request.getScreenIndicator());
+                break;
+        }
+    }
+
+    private void resetConnection() {
+        try {
+            if (ois != null) {
+                ois.close();
+            }
+            if (oos != null) {
+                oos.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+            initializeConnection(LoginScreen.pto);
+        } catch (IOException ex) {
+            Logger.getLogger(AvailabilityScreen.class.getName()).log(Level.SEVERE, "Failed to reset connection", ex);
+        }
+    }
+
+    private void showGameRequestAlert(RequestDTO request) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to play a game with " + request.getSender_username() + "?", new ButtonType("Cancel"), new ButtonType("Okay"));
+        alert.setTitle("Game Request");
+        alert.setHeaderText("Game Request from " + request.getSender_username());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            sendGameResponse(request, true);
+        } else {
+            sendGameResponse(request, false);
+        }
+    }
+
+    private void sendGameResponse(RequestDTO request, boolean accepted) {
+        try {
+            RequestDTO response = new RequestDTO();
+            response.setSender_username(LoginScreen.pto.getUsername());
+            response.setReciver_username(request.getSender_username());
+            response.setScreenIndicator(accepted ? 6 : 7);
+            oos.writeObject(response);
+            oos.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(AvailabilityScreen.class.getName()).log(Level.SEVERE, "Error sending game response", ex);
+        }
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
+        alert.showAndWait();
+    }
+
+    private void updatePlayerStatus(PlayerDTO player) {
+        if (player.getUsername().equals(currentUsername)) {
+            // This is the current user, don't add to the TableView
+            return;
+        }
+
+        if (!players.contains(player)) {
+            players.add(player);
+            updateTableView();
+        } else {
+            int index = players.indexOf(player);
+            players.set(index, player);
+            _tableView.refresh();
+        }
+    }
+
+    private void updateTableView() {
+        Platform.runLater(() -> {
+            _tableView.getItems().clear();
+            for (PlayerDTO player : players) {
+                if (!player.getUsername().equals(currentUsername)) {
+                    _tableView.getItems().add(player);
+                }
+            }
+        });
+    }
+
+    public void initializeConnection(PlayerDTO playerDTO) {
+        try {
+            socket = new Socket("10.178.240.32", 6007);
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+
+            playerDTO.setScreenIndicator(3);
+            oos.writeObject(playerDTO);
+            oos.flush();
+
+            Thread receiveThread = new Thread(this);
+            receiveThread.start();
+
+            this.currentUsername = playerDTO.getUsername();
+            updateTableView();
+        } catch (IOException ex) {
+            Logger.getLogger(AvailabilityScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
+        
+                
